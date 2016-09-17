@@ -1,0 +1,9 @@
+var temps = storage.global.temperatures.split(',');
+
+var chartData = [['Temperature']];
+
+temps.forEach(function(temp, ind){
+  chartData.push([Number(temp)]);
+});
+
+return chartData;
