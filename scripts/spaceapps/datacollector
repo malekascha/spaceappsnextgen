@@ -1,0 +1,13 @@
+if(storage.global.temperatures === undefined){
+  storage.global.temperatures = '';
+}
+
+var body = JSON.parse(request.rawBody);
+
+if(storage.global.temperatures.length === 0){
+  storage.global.temperatures = body.temperature;
+} else {
+  storage.global.temperatures += ',' + body.temperature;  
+}
+
+return storage.global.temperatures;
