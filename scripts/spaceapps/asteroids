@@ -1,0 +1,46 @@
+var http = require('http');
+
+var asteroidRequest = {
+  url: 'https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-09-11&end_date=2016-09-18&api_key=DEMO_KEY',
+  method: 'GET'
+};
+
+var asteroidRes = http.request(asteroidRequest);
+
+var body = JSON.parse(asteroidRes.body);
+
+var dates = {};
+
+for(var date in body.near_earth_objects){
+  if(dates[date] === undefined){
+    dates[date] = {
+      hazardous_asteroids: 0,
+      safe_asteroids: 0
+    };
+  }
+  body.near_earth_objects[date].forEach(function(asteroid){
+    if(asteroid.is_potentially_hazardous_asteroid === true){
+      dates[date].hazardous_asteroids++;
+    } else {
+      dates[date].safe_asteroids++;
+    }
+  });
+}
+
+var titles = ['Date' ,'Potentially\nHazardous\nAsteroids', 'Safe\nAsteroids'];
+
+function columnChartFormatter(data){
+  var chartData = [titles];
+  for(var date in dates){
+    chartData.push([
+      	date.substr(5),
+        dates[date].hazardous_asteroids,
+        dates[date].safe_asteroids
+      ]);
+  }
+  return chartData;
+}
+
+var chartData = columnChartFormatter(dates);
+
+return chartData;
